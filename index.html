@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Atención - Gestión de Órdenes y Reportes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1e88e5;
+            --secondary: #0d47a1;
+            --success: #43a047;
+            --warning: #ff9800;
+            --danger: #e53935;
+            --light: #f5f5f5;
+            --dark: #212121;
+            --gray: #757575;
+            --light-gray: #e0e0e0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: var(--dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo {
+            background: white;
+            color: var(--primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .project-info h1 {
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+        
+        .project-info p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        /* Main Container */
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: white;
+            padding: 1.5rem 1rem;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .nav-title {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--light-gray);
+            color: var(--gray);
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 5px;
+            color: var(--dark);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item:hover {
+            background-color: var(--light);
+        }
+        
+        .nav-item.active {
+            background: rgba(30, 136, 229, 0.1);
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .nav-item i {
+            margin-right: 10px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        /* Content Area */
+        .content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .dashboard-header h2 {
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--secondary);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: rgba(30, 136, 229, 0.1);
+        }
+        
+        /* Stats Cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .bg-blue {
+            background: rgba(30, 136, 229, 0.1);
+            color: var(--primary);
+        }
+        
+        .bg-green {
+            background: rgba(67, 160, 71, 0.1);
+            color: var(--success);
+        }
+        
+        .bg-orange {
+            background: rgba(255, 152, 0, 0.1);
+            color: var(--warning);
+        }
+        
+        .stat-title {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 0.5rem 0;
+        }
+        
+        .stat-info {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        /* Table Styles */
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: #f7f9fc;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 500;
+            color: var(--gray);
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background: rgba(255, 152, 0, 0.1);
+            color: var(--warning);
+        }
+        
+        .status-in-progress {
+            background: rgba(30, 136, 229, 0.1);
+            color: var(--primary);
+        }
+        
+        .status-completed {
+            background: rgba(67, 160, 71, 0.1);
+            color: var(--success);
+        }
+        
+        .action-btn {
+            padding: 0.5rem;
+            border-radius: 5px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            margin-right: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            background: var(--light);
+        }
+        
+        /* Form Styles */
+        .form-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .form-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-col {
+            flex: 1;
+        }
+        
+        /* Login Page */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        
+        .login-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            padding: 2.5rem;
+        }
+        
+        .login-logo {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .login-logo .logo {
+            margin: 0 auto;
+            background: var(--primary);
+            color: white;
+            font-size: 1.8rem;
+        }
+        
+        .login-title {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .login-subtitle {
+            text-align: center;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+        
+        /* Footer */
+        footer {
+            background: white;
+            padding: 1rem;
+            text-align: center;
+            color: var(--gray);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-card">
+            <div class="login-logo">
+                <div class="logo">PA</div>
+            </div>
+            <h2 class="login-title">Portal de Atención</h2>
+            <p class="login-subtitle">Gestión de Órdenes y Reportes</p>
+            
+            <div class="form-group">
+                <label for="email">Correo electrónico</label>
+                <input type="email" id="email" placeholder="usuario@ejemplo.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" placeholder="••••••••">
+            </div>
+            
+            <button class="btn btn-primary" style="width: 100%;" onclick="login()">
+                <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+            </button>
+            
+            <div style="text-align: center; margin-top: 1.5rem; color: var(--gray);">
+                <p>Versión 1.0 | Responsable: Kenia</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Application (hidden initially) -->
+    <div id="app" style="display: none;">
+        <header>
+            <div class="logo-container">
+                <div class="logo">PA</div>
+                <div class="project-info">
+                    <h1>Portal de Atención</h1>
+                    <p>Gestión de Órdenes y Reportes</p>
+                </div>
+            </div>
+            
+            <div class="user-info">
+                <div class="avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div>
+                    <div>Kenia (Administrador)</div>
+                    <div style="font-size: 0.8rem; opacity: 0.8;">Estado: En desarrollo</div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="main-container">
+            <aside class="sidebar">
+                <div class="nav-title">MENÚ PRINCIPAL</div>
+                
+                <a href="#" class="nav-item active" onclick="showSection('dashboard')">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                
+                <a href="#" class="nav-item" onclick="showSection('orders')">
+                    <i class="fas fa-clipboard-list"></i> Orden de Servicio
+                </a>
+                
+                <a href="#" class="nav-item" onclick="showSection('requests')">
+                    <i class="fas fa-file-alt"></i> Solicitudes/Reportes
+                </a>
+                
+                <a href="#" class="nav-item" onclick="showSection('assign')">
+                    <i class="fas fa-user-friends"></i> Asignar Orden
+                </a>
+                
+                <a href="#" class="nav-item" onclick="showSection('institutions')">
+                    <i class="fas fa-building"></i> Instituciones
+                </a>
+                
+                <a href="#" class="nav-item" onclick="showSection('equipment')">
+                    <i class="fas fa-laptop-medical"></i> Equipos
+                </a>
+                
+                <a href="#" class="nav-item" onclick="showSection('stock')">
+                    <i class="fas fa-boxes"></i> Stock
+                </a>
+                
+                <a href="#" class="nav-item" onclick="showSection('contacts')">
+                    <i class="fas fa-address-book"></i> Contactos
+                </a>
+                
+                <div style="flex-grow: 1;"></div>
+                
+                <a href="#" class="nav-item" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                </a>
+            </aside>
+            
+            <main class="content">
+                <!-- Dashboard Section -->
+                <div id="dashboard" class="section">
+                    <div class="dashboard-header">
+                        <h2>Panel de Control</h2>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Nueva Orden
+                        </button>
+                    </div>
+                    
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div>
+                                    <div class="stat-title">Órdenes Pendientes</div>
+                                    <div class="stat-value">12</div>
+                                </div>
+                                <div class="stat-icon bg-orange">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                            </div>
+                            <div class="stat-info">+2 desde ayer</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div>
+                                    <div class="stat-title">En Progreso</div>
+                                    <div class="stat-value">8</div>
+                                </div>
+                                <div class="stat-icon bg-blue">
+                                    <i class="fas fa-sync-alt"></i>
+                                </div>
+                            </div>
+                            <div class="stat-info">3 asignadas a usted</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div>
+                                    <div class="stat-title">Completadas</div>
+                                    <div class="stat-value">24</div>
+                                </div>
+                                <div class="stat-icon bg-green">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                            </div>
+                            <div class="stat-info">+5 esta semana</div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-header">
+                        <h2>Órdenes Recientes</h2>
+                        <div>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-filter"></i> Filtrar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>N° Orden</th>
+                                    <th>Institución</th>
+                                    <th>Equipo</th>
+                                    <th>Fecha</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>ORD-1025</td>
+                                    <td>Hospital Nacional Dos de Mayo</td>
+                                    <td>Monitor Signos Vitales</td>
+                                    <td>25/07/2025</td>
+                                    <td><span class="status status-in-progress">En Progreso</span></td>
+                                    <td>
+                                        <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn"><i class="fas fa-file-pdf"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>ORD-1024</td>
+                                    <td>Clínica Internacional</td>
+                                    <td>Bomba de Infusión</td>
+                                    <td>24/07/2025</td>
+                                    <td><span class="status status-pending">Pendiente</span></td>
+                                    <td>
+                                        <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn"><i class="fas fa-user-plus"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>ORD-1023</td>
+                                    <td>Hospital Nacional Cayetano Heredia</td>
+                                    <td>Desfibrilador</td>
+                                    <td>23/07/2025</td>
+                                    <td><span class="status status-completed">Completada</span></td>
+                                    <td>
+                                        <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn"><i class="fas fa-file-pdf"></i></button>
+                                        <button class="action-btn"><i class="fas fa-print"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>ORD-1022</td>
+                                    <td>Hospital Nacional Hipolito Unanue</td>
+                                    <td>Ventilador</td>
+                                    <td>22/07/2025</td>
+                                    <td><span class="status status-in-progress">En Progreso</span></td>
+                                    <td>
+                                        <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Order Form Section -->
+                <div id="orders" class="section" style="display: none;">
+                    <div class="dashboard-header">
+                        <h2>Crear Nueva Orden de Servicio</h2>
+                    </div>
+                    
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label for="institution">Institución *</label>
+                            <select id="institution">
+                                <option value="">Seleccione una institución</option>
+                                <option value="1">Hospital Nacional Dos de Mayo</option>
+                                <option value="2">Clínica Internacional</option>
+                                <option value="3">Hospital Nacional Cayetano Heredia</option>
+                                <option value="4">Hospital Nacional Hipolito Unanue</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contact">Contacto *</label>
+                            <select id="contact">
+                                <option value="">Seleccione un contacto</option>
+                                <option value="1">Dr. Carlos Mendoza</option>
+                                <option value="2">Lic. María Rodríguez</option>
+                                <option value="3">Ing. Juan Pérez</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="equipment">Equipo *</label>
+                            <select id="equipment">
+                                <option value="">Seleccione un equipo</option>
+                                <option value="1">Monitor de Signos Vitales</option>
+                                <option value="2">Bomba de Infusión</option>
+                                <option value="3">Desfibrilador</option>
+                                <option value="4">Ventilador</option>
+                                <option value="5">Electrocardiógrafo</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="problem">Descripción del Problema *</label>
+                            <textarea id="problem" rows="4" placeholder="Describa el problema o solicitud..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="priority">Prioridad</label>
+                            <select id="priority">
+                                <option value="normal">Normal</option>
+                                <option value="high">Alta</option>
+                                <option value="urgent">Urgente</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <button class="btn btn-outline" style="width: 100%;">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </button>
+                            </div>
+                            <div class="form-col">
+                                <button class="btn btn-primary" style="width: 100%;">
+                                    <i class="fas fa-save"></i> Generar Orden
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Requests Section -->
+                <div id="requests" class="section" style="display: none;">
+                    <div class="dashboard-header">
+                        <h2>Solicitudes y Reportes</h2>
+                        <div>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-filter"></i> Filtrar
+                            </button>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Nuevo Reporte
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>N° Orden</th>
+                                    <th>Institución</th>
+                                    <th>Equipo</th>
+                                    <th>Fecha Creación</th>
+                                    <th>Estado</th>
+                                    <th>Técnico</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>ORD-1025</td>
+                                    <td>Hospital Nacional Dos de Mayo</td>
+                                    <td>Monitor Signos Vitales</td>
+                                    <td>25/07/2025</td>
+                                    <td><span class="status status-in-progress">En Progreso</span></td>
+                                    <td>Kenia</td>
+                                    <td>
+                                        <button class="action-btn"><i class="fas fa-file-alt"></i></button>
+                                        <button class="action-btn"><i class="fas fa-user-edit"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>ORD-1024</td>
+                                    <td>Clínica Internacional</td>
+                                    <td>Bomba de Infusión</td>
+                                    <td>24/07/2025</td>
+                                    <td><span class="status status-pending">Pendiente</span></td>
+                                    <td>-</td>
+                                    <td>
+                                        <button class="action-btn"><i class="fas fa-user-plus"></i></button>
+                                        <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>ORD-1023</td>
+                                    <td>Hospital Nacional Cayetano Heredia</td>
+                                    <td>Desfibrilador</td>
+                                    <td>23/07/2025</td>
+                                    <td><span class="status status-completed">Completada</span></td>
+                                    <td>Carlos</td>
+                                    <td>
+                                        <button class="action-btn"><i class="fas fa-file-pdf"></i></button>
+                                        <button class="action-btn"><i class="fas fa-print"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+        
+        <footer>
+            <p>Portal de Atención - Gestión de Órdenes y Reportes | Versión 1.0 | © 2025</p>
+        </footer>
+    </div>
+    
+    <script>
+        // Simulate login
+        function login() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('app').style.display = 'block';
+        }
+        
+        // Logout function
+        function logout() {
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('app').style.display = 'none';
+        }
+        
+        // Show specific section
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).style.display = 'block';
+            
+            // Update active menu item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            event.currentTarget.classList.add('active');
+        }
+        
+        // Demo functionality for buttons
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                if(!this.classList.contains('btn-outline')) {
+                    e.preventDefault();
+                    alert('Función en desarrollo. Esta acción se implementará en el sistema completo solo es boceto :v.');
+                }
+            });
+        });
+        
+        // Demo functionality for action buttons
+        document.querySelectorAll('.action-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                alert('Acción simulada: Esta función se implementará completamente en la aplicación final, solo es boceto :v.');
+            });
+        });
+    </script>
+</body>
+</html>
